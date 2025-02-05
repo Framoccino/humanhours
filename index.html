@@ -4,49 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human Hours</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Web3 Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="/public/js/web3.js"></script>
+    <!-- Add Three.js for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         /* Base styles */
-        body {
+        * {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Navbar */
-        .navbar {
-            background-color: #0000ff;
-            color: white;
-            padding: 1rem;
+        body {
+            background-color: var(--primary-light);
+            color: var(--text-primary);
+        }
+
+        /* Header styles */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1rem 2rem;
+            background: var(--secondary);
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
-        /* Main container */
+        .logo {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: translateY(-1px);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Main content styles */
         .main-container {
+            padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
         }
 
-        /* Hero section */
-        .hero-section {
-            text-align: center;
-            padding: 3rem;
-            background-color: white;
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        /* Search bar */
+        .search-bar {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--secondary);
             border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            background: rgba(17, 34, 64, 0.6);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.1);
+        }
+
+        /* Validated Skills section */
+        .validated-skills {
             margin-bottom: 2rem;
         }
 
-        /* Wallet section */
-        .wallet-section {
-            background-color: #f0f8ff;
-            padding: 2rem;
-            border-radius: 8px;
+        .skills-list {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            border-radius: 20px;
+        }
+
+        .skill-tag .count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
-        /* Services grid */
+        .action-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Service cards */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -54,94 +136,645 @@
         }
 
         .service-card {
-            background-color: white;
+            background: var(--secondary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        .service-details {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .learn-more {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 0.8rem;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .learn-more:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Add Stats Dashboard */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--secondary);
             padding: 1.5rem;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        
+        .stat-card h4 {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
-        /* Button styles */
-        .button {
-            background-color: #0000ff;
-            color: white;
-            padding: 0.8rem 1.5rem;
+        /* Enhanced UI Styles */
+        :root {
+            --primary-dark: #000000;
+            --primary-light: #ffffff;
+            --accent-blue: #0066cc;
+            --accent-green: #64FFDA;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --gradient-dark: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%);
+            --primary: #0A192F;
+            --secondary: #112240;
+            --accent: #64FFDA;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .service-card {
+            animation: fadeIn 0.3s ease-out;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(100, 255, 218, 0.1);
+        }
+        
+        /* Trust Score Indicator */
+        .trust-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .trust-score-bar {
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 2px;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+        
+        .trust-score-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+
+            .header-actions {
+                gap: 0.5rem;
+            }
+
+            .trust-score {
+                display: none;
+            }
+        }
+
+        /* Modern Hero Section */
+        .hero {
+            height: 100vh;
+            background: var(--gradient-dark);
+            color: var(--primary-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.4;
+        }
+
+        /* Modern Card Design */
+        .service-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .service-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modern Button Design */
+        .button-primary {
+            background: var(--accent-blue);
+            color: var(--primary-light);
+            padding: 18px 40px;
+            border-radius: 30px;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            font-size: 17px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .button:hover {
-            background-color: #0000dd;
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.2);
+        }
+
+        /* AI Animation Container */
+        .ai-animation-container {
+            width: 100%;
+            height: 240px;
+            position: relative;
+            margin: 40px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        #ai-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .animation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(100, 255, 218, 0.1),
+                transparent
+            );
+            pointer-events: none;
+        }
+
+        /* Pulse Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .pulse-circle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* Provider Info Styles */
+        .provider-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .provider-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .provider-name {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .provider-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            color: #ffd700;
+            letter-spacing: -1px;
+        }
+
+        .rating-count {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 1rem 0;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">Human Hours ($HH)</div>
-        <button class="button">Connect Wallet</button>
-    </nav>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 class="hero-title">Human Hours</h1>
+        <p class="hero-subtitle">The Economy of Time. Trade skills, earn hours, build trust.</p>
+        <div class="ai-animation-container">
+            <canvas id="ai-canvas"></canvas>
+            <div class="animation-overlay">
+                <div class="pulse-circle"></div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Main Content -->
-    <div class="main-container">
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <h1>Welcome to Human Hours</h1>
-            <p>A Decentralized P2P Economy Powered by Time</p>
-            <button class="button">Get Started</button>
-        </section>
-
-        <!-- Wallet Section -->
-        <section class="wallet-section">
-            <h2>Your Wallet</h2>
-            <p>Balance: 0 $HH</p>
-            <button class="button">Earn Hours</button>
-        </section>
-
-        <!-- Services Section -->
-        <section class="services-section">
-            <h2>Available Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Guitar Lessons</h3>
-                    <p>2 $HH per hour</p>
-                    <p>By: John D.</p>
-                    <button class="button">Book Now</button>
+    <header class="header">
+        <div class="logo">HUMAN HOURS</div>
+        <div class="header-actions">
+            <div class="trust-score">
+                <span>Trust Score:</span>
+                <div class="trust-score-bar">
+                    <div class="trust-score-fill" id="trustScoreFill"></div>
                 </div>
-                <div class="service-card">
-                    <h3>Web Development</h3>
-                    <p>1 $HH per hour</p>
-                    <p>By: Sarah M.</p>
-                    <button class="button">Book Now</button>
+                <span id="trustScoreValue">0%</span>
+            </div>
+            <button class="connect-wallet">Connect Wallet</button>
+            <button class="notifications">🔔</button>
+            <button class="profile">👤</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <h1>Welcome Back</h1>
+        
+        <input type="search" 
+               class="search-bar" 
+               placeholder="What do you want to do today?"
+        >
+
+        <section class="validated-skills">
+            <h2>Validated Skills</h2>
+            <div class="skills-list">
+                <div class="skill-tag">
+                    ✓ Gardening <span class="count">(12)</span>
                 </div>
-                <div class="service-card">
-                    <h3>Yoga Classes</h3>
-                    <p>1.5 $HH per hour</p>
-                    <p>By: Mike R.</p>
-                    <button class="button">Book Now</button>
+                <div class="skill-tag">
+                    ✓ Photography <span class="count">(8)</span>
+                </div>
+                <div class="skill-tag">
+                    ✓ Cooking <span class="count">(15)</span>
                 </div>
             </div>
         </section>
-    </div>
+
+        <div class="action-buttons">
+            <button class="action-button">Add $HH</button>
+            <button class="action-button">Use $HH</button>
+            <button class="action-button">Analytics</button>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="provider-info">
+                    <img src="/images/avatars/provider1.jpg" alt="Provider" class="provider-avatar">
+                    <div class="provider-details">
+                        <h4 class="provider-name">John D.</h4>
+                        <div class="provider-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-count">(12)</span>
+                        </div>
+                    </div>
+                </div>
+                <h3>Web Development</h3>
+                <div class="service-details">
+                    <span>2 HH/hour</span>
+                    <span>•</span>
+                    <span>Remote</span>
+                </div>
+                <p class="service-description">
+                    Expert web development services using modern technologies.
+                    Specializing in React, Node.js, and blockchain integration.
+                </p>
+                <button class="learn-more">Learn More</button>
+            </div>
+
+            <div class="service-card">
+                <div class="provider-info">
+                    <img src="" alt="" class="provider-avatar">
+                    <div class="provider-details">
+                        <h4 class="provider-name"></h4>
+                        <div class="provider-rating">
+                            <span class="stars"></span>
+                            <span class="rating-count"></span>
+                        </div>
+                    </div>
+                </div>
+                <h3>Teach Basic Photography</h3>
+                <div class="service-details">
+                    📍 Online
+                </div>
+                <div class="service-details">
+                    ⏱️ 2 hours
+                </div>
+                <p>Looking for someone to teach me the basics of DSLR photography and photo editing.</p>
+                <button class="learn-more">Learn More</button>
+            </div>
+
+            <div class="service-card">
+                <div class="provider-info">
+                    <img src="" alt="" class="provider-avatar">
+                    <div class="provider-details">
+                        <h4 class="provider-name"></h4>
+                        <div class="provider-rating">
+                            <span class="stars"></span>
+                            <span class="rating-count"></span>
+                        </div>
+                    </div>
+                </div>
+                <h3>Cook Healthy Meals</h3>
+                <div class="service-details">
+                    📍 Manhattan, NY
+                </div>
+                <div class="service-details">
+                    ⏱️ 4 hours
+                </div>
+                <p>Need assistance preparing a week's worth of healthy meal prep for my family.</p>
+                <button class="learn-more">Learn More</button>
+            </div>
+        </div>
+
+        <!-- Stats Dashboard -->
+        <div class="stats-dashboard">
+            <div class="stat-card">
+                <h4>Available Balance</h4>
+                <div class="stat-value">0 $HH</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Earned</h4>
+                <div class="stat-value">0 $HH</div>
+            </div>
+            <div class="stat-card">
+                <h4>Tasks Completed</h4>
+                <div class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Trust Score</h4>
+                <div class="stat-value">N/A</div>
+            </div>
+        </div>
+
+        <!-- New Task Modal -->
+        <div id="new-task-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>Create New Task</h2>
+                <form id="new-task-form">
+                    <input type="text" placeholder="Task Title" required>
+                    <textarea placeholder="Description" required></textarea>
+                    <input type="number" placeholder="Hours Required" required>
+                    <button type="submit" class="button">Create Task</button>
+                </form>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // Basic interactivity
+        // Add basic interactivity
         document.addEventListener('DOMContentLoaded', () => {
-            // Wallet connection
-            const connectButton = document.querySelector('.navbar .button');
-            connectButton.addEventListener('click', () => {
-                alert('Wallet connection coming soon!');
+            // Search functionality
+            const searchBar = document.querySelector('.search-bar');
+            searchBar.addEventListener('input', (e) => {
+                // Add search logic here
+                console.log('Searching for:', e.target.value);
             });
 
-            // Service booking
-            const bookButtons = document.querySelectorAll('.service-card .button');
-            bookButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const card = e.target.closest('.service-card');
-                    const service = card.querySelector('h3').textContent;
-                    alert(`Booking ${service} - Coming soon!`);
+            // Learn More buttons
+            const learnMoreButtons = document.querySelectorAll('.learn-more');
+            learnMoreButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const card = button.closest('.service-card');
+                    const title = card.querySelector('h3').textContent;
+                    alert(`Opening details for: ${title}`);
                 });
             });
+
+            // Wallet connection
+            const connectWalletBtn = document.querySelector('.connect-wallet');
+            connectWalletBtn.addEventListener('click', () => {
+                alert('Wallet connection coming soon!');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Web3
+            const hasWeb3 = await web3Handler.init();
+            const connectWalletBtn = document.getElementById('connect-wallet');
+            const walletAddressSpan = document.getElementById('wallet-address');
+            
+            connectWalletBtn.addEventListener('click', async () => {
+                try {
+                    const address = await web3Handler.connectWallet();
+                    walletAddressSpan.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
+                    connectWalletBtn.textContent = 'Connected';
+                    
+                    // Get and display balance
+                    const balance = await web3Handler.getBalance(address);
+                    document.querySelector('.stat-value').textContent = `${balance} $HH`;
+                } catch (error) {
+                    alert('Failed to connect wallet: ' + error.message);
+                }
+            });
+        });
+
+        // AI Animation Script
+        class AIVisualization {
+            constructor() {
+                this.container = document.querySelector('.ai-animation-container');
+                this.canvas = document.getElementById('ai-canvas');
+                
+                // Three.js setup
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    this.container.offsetWidth / this.container.offsetHeight,
+                    0.1,
+                    1000
+                );
+                
+                this.renderer = new THREE.WebGLRenderer({
+                    canvas: this.canvas,
+                    alpha: true,
+                    antialias: true
+                });
+                
+                this.renderer.setSize(
+                    this.container.offsetWidth,
+                    this.container.offsetHeight
+                );
+                
+                // Initialize particles
+                this.particles = [];
+                this.particleCount = 100;
+                this.init();
+            }
+            
+            init() {
+                // Create particle system
+                const geometry = new THREE.BufferGeometry();
+                const vertices = [];
+                const colors = [];
+                
+                for (let i = 0; i < this.particleCount; i++) {
+                    vertices.push(
+                        Math.random() * 40 - 20,
+                        Math.random() * 40 - 20,
+                        Math.random() * 40 - 20
+                    );
+                    
+                    colors.push(
+                        0.4,  // R
+                        1.0,  // G
+                        0.85, // B
+                        Math.random() * 0.5 + 0.5  // A
+                    );
+                }
+                
+                geometry.setAttribute(
+                    'position',
+                    new THREE.Float32BufferAttribute(vertices, 3)
+                );
+                geometry.setAttribute(
+                    'color',
+                    new THREE.Float32BufferAttribute(colors, 4)
+                );
+                
+                const material = new THREE.PointsMaterial({
+                    size: 0.5,
+                    vertexColors: true,
+                    transparent: true
+                });
+                
+                this.particleSystem = new THREE.Points(geometry, material);
+                this.scene.add(this.particleSystem);
+                
+                this.camera.position.z = 30;
+                
+                this.animate();
+            }
+            
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                // Rotate particle system
+                this.particleSystem.rotation.x += 0.001;
+                this.particleSystem.rotation.y += 0.002;
+                
+                // Update particle positions
+                const positions = this.particleSystem.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i + 1] += Math.sin(Date.now() * 0.001 + i) * 0.01;
+                }
+                this.particleSystem.geometry.attributes.position.needsUpdate = true;
+                
+                this.renderer.render(this.scene, this.camera);
+            }
+            
+            resize() {
+                const width = this.container.offsetWidth;
+                const height = this.container.offsetHeight;
+                
+                this.camera.aspect = width / height;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(width, height);
+            }
+        }
+        
+        // Initialize visualization when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const visualization = new AIVisualization();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => visualization.resize());
         });
     </script>
 </body>
