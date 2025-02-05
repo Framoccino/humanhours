@@ -4,11 +4,12 @@ pragma solidity ^0.8.0;
 contract HumanHours {
     struct Task {
         uint256 id;
-        address provider;
-        address client;
-        uint256 amount;
-        bool completed;
-        uint256 deadline;
+        address creator;
+        string title;
+        string description;
+        uint256 hoursRequired;
+        bool isCompleted;
+        address worker;
     }
 
     string public name = "Human Hours";
@@ -30,7 +31,8 @@ contract HumanHours {
     uint256 public requiredVotes = 3;
 
     // Events
-    event TaskCreated(uint256 taskId, address provider, uint256 amount);
+    event TaskCreated(uint256 taskId, address creator);
+    event TaskAccepted(uint256 taskId, address worker);
     event TaskCompleted(uint256 taskId);
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -43,34 +45,30 @@ contract HumanHours {
         // Initialize contract
     }
 
-    function createTask(address provider, uint256 amount, uint256 deadline) external {
-        require(balances[msg.sender] >= amount, "Insufficient balance");
-        
+    function createTask(string memory _title, string memory _description, uint256 _hours) public {
         taskCount++;
         tasks[taskCount] = Task(
             taskCount,
-            provider,
             msg.sender,
-            amount,
+            _title,
+            _description,
+            _hours,
             false,
-            deadline
+            address(0)
         );
-
-        balances[msg.sender] -= amount; // Escrow the amount
-        emit TaskCreated(taskCount, provider, amount);
+        emit TaskCreated(taskCount, msg.sender);
     }
 
-    function completeTask(uint256 taskId) external {
-        Task storage task = tasks[taskId];
-        require(!task.completed, "Task already completed");
-        require(block.timestamp <= task.deadline, "Task expired");
-        require(msg.sender == task.client, "Only client can complete task");
+    function acceptTask(uint256 _taskId) public {
+        require(tasks[_taskId].worker == address(0), "Task already accepted");
+        tasks[_taskId].worker = msg.sender;
+        emit TaskAccepted(_taskId, msg.sender);
+    }
 
-        task.completed = true;
-        balances[task.provider] += task.amount;
-        updateTrustScore(task.provider, true);
-        
-        emit TaskCompleted(taskId);
+    function completeTask(uint256 _taskId) public {
+        require(tasks[_taskId].worker == msg.sender, "Not the assigned worker");
+        tasks[_taskId].isCompleted = true;
+        emit TaskCompleted(_taskId);
     }
 
     function updateTrustScore(address user, bool positive) internal {
@@ -126,8 +124,8 @@ contract HumanHours {
 
     function createDispute(uint256 taskId) external {
         Task storage task = tasks[taskId];
-        require(!task.completed, "Task already completed");
-        require(msg.sender == task.client, "Only client can create dispute");
+        require(!task.isCompleted, "Task already completed");
+        require(msg.sender == task.creator, "Only client can create dispute");
         
         taskDisputes[taskId] = true;
         emit DisputeCreated(taskId);

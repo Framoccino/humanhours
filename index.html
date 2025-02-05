@@ -28,33 +28,41 @@
 
         /* Header styles */
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
-            background: var(--secondary);
-            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding: 1.5rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
+            z-index: 1000;
         }
 
         .logo {
-            color: var(--accent);
-            font-weight: bold;
+            color: var(--accent-green);
             font-size: 1.2rem;
-            transition: transform 0.2s;
+            font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
-        .logo:hover {
+        .connect-wallet {
+            background: transparent;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connect-wallet:hover {
+            background: rgba(100, 255, 218, 0.1);
             transform: translateY(-1px);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
         }
 
         /* Main content styles */
@@ -296,31 +304,30 @@
 
         /* Modern Hero Section */
         .hero {
-            height: 100vh;
+            height: calc(100vh - 76px); /* Subtract header height */
+            margin-top: 76px; /* Add header height */
             background: var(--gradient-dark);
-            color: var(--primary-light);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .hero-title {
-            font-size: 56px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
+        /* Hero Text Overlay */
+        .hero-text {
+            position: absolute;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            text-align: center;
         }
 
         .hero-subtitle {
-            font-size: 28px;
-            font-weight: 400;
-            margin-bottom: 40px;
-            max-width: 600px;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--primary-light);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            margin: 0 auto;
             line-height: 1.4;
         }
 
@@ -454,13 +461,30 @@
             line-height: 1.5;
             margin: 1rem 0;
         }
+
+        /* Welcome Section */
+        .welcome-section {
+            padding: 4rem 2rem;
+            background: var(--primary-dark);
+            color: var(--primary-light);
+        }
     </style>
 </head>
 <body>
+    <!-- Header Bar (Fixed at top) -->
+    <header class="header">
+        <div class="logo">HUMAN HOURS</div>
+        <button class="connect-wallet">CONNECT WALLET</button>
+    </header>
+
     <!-- Hero Section -->
     <section class="hero">
-        <h1 class="hero-title">Human Hours</h1>
-        <p class="hero-subtitle">The Economy of Time. Trade skills, earn hours, build trust.</p>
+        <!-- Hero Text Overlay -->
+        <div class="hero-text">
+            <p class="hero-subtitle">The Economy of Time. Trade skills, earn hours, build trust.</p>
+        </div>
+
+        <!-- AI Animation Container -->
         <div class="ai-animation-container">
             <canvas id="ai-canvas"></canvas>
             <div class="animation-overlay">
@@ -469,21 +493,11 @@
         </div>
     </section>
 
-    <header class="header">
-        <div class="logo">HUMAN HOURS</div>
-        <div class="header-actions">
-            <div class="trust-score">
-                <span>Trust Score:</span>
-                <div class="trust-score-bar">
-                    <div class="trust-score-fill" id="trustScoreFill"></div>
-                </div>
-                <span id="trustScoreValue">0%</span>
-            </div>
-            <button class="connect-wallet">Connect Wallet</button>
-            <button class="notifications">🔔</button>
-            <button class="profile">👤</button>
-        </div>
-    </header>
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+        <h1>Welcome Back!</h1>
+        <!-- Rest of your content -->
+    </section>
 
     <main class="main-container">
         <h1>Welcome Back</h1>

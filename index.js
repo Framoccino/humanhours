@@ -1,6 +1,5 @@
 // Human Hours ($HH) - Core Application Entry Point
-
-console.log("Our human nature");
+console.log("Initializing Human Hours Platform...");
 
 // Initialize core application
 const HumanHours = {
@@ -9,6 +8,50 @@ const HumanHours = {
     symbol: 'HH',
     description: 'A Decentralized P2P Economy Powered by Time'
 };
+
+// Web3 Integration
+async function initializeWeb3() {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            // Request account access
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            console.log('Connected account:', accounts[0]);
+            return accounts[0];
+        } catch (error) {
+            console.error('User denied account access');
+        }
+    } else {
+        console.log('Please install MetaMask!');
+    }
+}
+
+// AI Matching System
+const AIMatchingSystem = {
+    findMatches: function(userSkills, location) {
+        // Implement AI matching logic here
+        return [
+            { skill: 'Gardening', match: 95 },
+            { skill: 'Web Development', match: 88 },
+            { skill: 'Teaching', match: 82 }
+        ];
+    }
+};
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the message element
+    const messageElement = document.getElementById('message');
+    if (messageElement) {
+        messageElement.textContent = 'Welcome to Human Hours';
+    }
+
+    // Initialize Web3
+    initializeWeb3().then(account => {
+        if (account) {
+            console.log('Web3 initialized with account:', account);
+        }
+    });
+});
 
 module.exports = HumanHours;
 

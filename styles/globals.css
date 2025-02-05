@@ -3,18 +3,54 @@
 @tailwind utilities;
 
 :root {
-  --primary: #16A34A;
-  --primary-dark: #15803D;
+  --primary: #0A192F;
+  --secondary: #112240;
+  --accent: #64FFDA;
+  --text-primary: #E6F1FF;
+  --text-secondary: #8892B0;
 }
 
 html,
 body {
-  padding: 0;
+  background-color: var(--primary);
+  color: var(--text-primary);
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  padding: 0;
+  min-height: 100vh;
 }
 
 * {
   box-sizing: border-box;
+}
+
+@layer components {
+  .card {
+    @apply bg-[#112240] border border-[#1E2D4D] rounded-lg shadow-lg;
+  }
+
+  .button-primary {
+    @apply px-4 py-2 border border-[#64FFDA] text-[#64FFDA] rounded-lg 
+           hover:bg-[#64FFDA]/10 transition-colors;
+  }
+}
+
+.button-secondary {
+  @apply px-4 py-2 border border-[#1E2D4D] text-[#E6F1FF] rounded-lg 
+         hover:bg-[#1E2D4D] transition-colors;
+}
+
+.input-primary {
+  @apply w-full pl-12 pr-4 py-3 bg-[#112240] text-[#E6F1FF] rounded-lg 
+         border border-[#1E2D4D] focus:border-[#64FFDA] focus:ring-1 
+         focus:ring-[#64FFDA] transition-colors;
+}
+
+.input {
+  background-color: var(--secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
 } 

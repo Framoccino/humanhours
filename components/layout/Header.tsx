@@ -1,39 +1,55 @@
+import { Menu, Bell, User, Wallet } from 'lucide-react';
 import Link from 'next/link';
-import { useWallet } from '../../hooks/useWallet';
-import { Bell } from 'lucide-react';
+import { useWeb3 } from '../../context/Web3Context';
 
-export default function Header() {
-  const { connect, address, balance } = useWallet();
-
+export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
+  const { account, balance, connectWallet, isConnecting } = useWeb3();
+  
   return (
-    <header className="bg-white border-b">
+    <header className="bg-[#112240] border-b border-[#1E2D4D] sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="text-green-600 text-xl font-bold">
-          HUMAN HOURS
-        </Link>
+        <div className="flex items-center gap-4">
+          <button onClick={onMenuClick} className="lg:hidden">
+            <Menu className="w-6 h-6 text-[#E6F1FF]" />
+          </button>
+          <Link href="/" className="text-2xl font-bold text-[#64FFDA]">
+            HUMAN HOURS
+          </Link>
+        </div>
+
+        <div className="hidden lg:flex items-center gap-6">
+          <Link href="/tasks" className="text-[#E6F1FF] hover:text-[#64FFDA]">
+            Tasks
+          </Link>
+          <Link href="/community" className="text-[#E6F1FF] hover:text-[#64FFDA]">
+            Community
+          </Link>
+          <Link href="/dao" className="text-[#E6F1FF] hover:text-[#64FFDA]">
+            DAO
+          </Link>
+        </div>
 
         <div className="flex items-center gap-4">
-          {address ? (
-            <>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">{balance} HH</span>
-                <span className="text-xs text-gray-400">
-                  {address.slice(0, 6)}...{address.slice(-4)}
-                </span>
-              </div>
-              <Bell className="w-5 h-5 text-gray-600 cursor-pointer" />
-              <img 
-                src={`https://avatars.dicebear.com/api/identicon/${address}.svg`}
-                className="w-8 h-8 rounded-full"
-                alt="Profile"
-              />
-            </>
+          <button className="p-2 hover:bg-[#1E2D4D] rounded-full">
+            <Bell className="w-5 h-5 text-[#E6F1FF]" />
+          </button>
+          {account ? (
+            <div className="flex items-center gap-3">
+              <Link href="/wallet" className="flex items-center gap-2 px-4 py-2 bg-[#1E2D4D] rounded-lg">
+                <Wallet className="w-4 h-4 text-[#64FFDA]" />
+                <span className="text-[#64FFDA]">{balance} HH</span>
+              </Link>
+              <button className="p-2 hover:bg-[#1E2D4D] rounded-full">
+                <User className="w-5 h-5 text-[#E6F1FF]" />
+              </button>
+            </div>
           ) : (
-            <button
-              onClick={connect}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            <button 
+              onClick={connectWallet}
+              disabled={isConnecting}
+              className="button-primary disabled:opacity-50"
             >
-              Connect Wallet
+              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
             </button>
           )}
         </div>

@@ -1,103 +1,122 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import MainLayout from '../components/layout/MainLayout';
+import { Search, Clock, MapPin, Star, Users, BarChart2 } from 'lucide-react';
+import ValidatedSkillBadge from '../components/skills/ValidatedSkillBadge';
+import TaskCard from '../components/tasks/TaskCard';
 
-export default function Home({ wallet, connectWallet }) {
+// Mock data
+const mockSkills = [
+    { name: 'Gardening', count: 12, isActive: true },
+    { name: 'Photography', count: 8 },
+    { name: 'Cooking', count: 15 },
+    { name: 'Web Development', count: 5 },
+    { name: 'Language Teaching', count: 3 }
+];
+
+const mockTasks = [
+    {
+        id: 1,
+        title: 'Help with Garden Maintenance',
+        location: 'Brooklyn, NY',
+        duration: '3 hours',
+        description: 'Need help with pruning trees and planting new flowers in my backyard garden.',
+        hourlyRate: 2,
+        provider: {
+            name: 'Sarah M.',
+            rating: 4.8,
+            completedTasks: 23
+        }
+    },
+    // ... more tasks
+];
+
+export default function Home() {
     const [searchQuery, setSearchQuery] = useState('');
-    const [tasks, setTasks] = useState([]);
-    
-    const validatedSkills = [
-        { name: 'Gardening', count: 12 },
-        { name: 'Photography', count: 8 },
-        { name: 'Cooking', count: 15 }
-    ];
+    const [wallet, setWallet] = useState(null);
+    const [tasks, setTasks] = useState(mockTasks);
 
-    useEffect(() => {
-        // Fetch tasks from API
-        fetch('/api/tasks')
-            .then(res => res.json())
-            .then(data => setTasks(data))
-            .catch(error => console.error('Error fetching tasks:', error));
-    }, []);
+    // Connect wallet
+    const connectWallet = async () => {
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                setWallet({ address: accounts[0] });
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+            }
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <MainLayout>
             <Head>
                 <title>Human Hours - P2P Economy Powered by Time</title>
-                <meta name="description" content="A Decentralized P2P Economy Powered by Time" />
-                <link rel="icon" href="/favicon.ico" />
+                <meta name="description" content="A decentralized P2P economy powered by time" />
             </Head>
 
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-green-600">HUMAN HOURS</h1>
-                    <div className="flex items-center gap-4">
-                        <button 
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                {/* Hero Section */}
+                <div className="mb-12">
+                    <h1 className="text-4xl font-bold mb-4">Welcome to Human Hours</h1>
+                    <p className="text-xl text-gray-600 mb-8">
+                        Trade your time and skills in a decentralized economy
+                    </p>
+                    {!wallet ? (
+                        <button
                             onClick={connectWallet}
-                            className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
                         >
-                            {wallet ? `${wallet.address.slice(0, 6)}...${wallet.address.slice(-4)}` : 'Connect Wallet'}
+                            Connect Wallet to Get Started
                         </button>
-                        <button className="p-2">🔔</button>
-                        <button className="p-2">👤</button>
-                    </div>
-                </div>
-            </header>
-
-            <main className="max-w-7xl mx-auto px-4 py-8">
-                <div className="mb-8">
-                    <h2 className="text-3xl font-bold mb-4">Welcome Back</h2>
-                    <p className="text-gray-600">A Decentralized P2P Economy Powered by Time</p>
-                </div>
-                
-                <div className="mb-8">
-                    <input
-                        type="text"
-                        placeholder="What do you want to do today?"
-                        className="w-full p-4 border rounded-lg"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-
-                <section className="mb-8">
-                    <h3 className="text-xl font-semibold mb-4">Validated Skills</h3>
-                    <div className="flex gap-4">
-                        {validatedSkills.map((skill) => (
-                            <div key={skill.name} className="flex items-center gap-2">
-                                <span className="text-green-500">✓</span>
-                                <span>{skill.name}</span>
-                                <span className="text-gray-500">({skill.count})</span>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <div className="flex gap-4 mb-8">
-                    <button className="px-6 py-2 bg-green-600 text-white rounded-lg">Add $HH</button>
-                    <button className="px-6 py-2 border rounded-lg">Use $HH</button>
-                    <button className="px-6 py-2 border rounded-lg">Analytics</button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {tasks.map((task) => (
-                        <div key={task.title} className="bg-white p-6 rounded-lg shadow">
-                            <h3 className="text-xl font-semibold mb-4">{task.title}</h3>
-                            <div className="flex items-center gap-2 text-gray-600 mb-2">
-                                <span>📍</span>
-                                <span>{task.location}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-600 mb-4">
-                                <span>⏱️</span>
-                                <span>{task.duration}</span>
-                            </div>
-                            <p className="text-gray-600 mb-4">{task.description}</p>
-                            <button className="w-full py-2 bg-green-600 text-white rounded-lg">
-                                Learn More
-                            </button>
+                    ) : (
+                        <div className="relative">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <input
+                                type="text"
+                                placeholder="What do you want to do today?"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-12 pr-4 py-3 bg-white rounded-lg border focus:ring-2 
+                                         focus:ring-green-500 focus:border-transparent"
+                            />
                         </div>
-                    ))}
+                    )}
                 </div>
-            </main>
-        </div>
+
+                {/* Main Content */}
+                {wallet && (
+                    <>
+                        {/* Validated Skills Section */}
+                        <section className="mb-8">
+                            <h2 className="text-xl font-semibold mb-4">Validated Skills</h2>
+                            <div className="flex flex-wrap gap-3">
+                                {mockSkills.map((skill) => (
+                                    <ValidatedSkillBadge
+                                        key={skill.name}
+                                        name={skill.name}
+                                        count={skill.count}
+                                        isActive={skill.isActive}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Tasks Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {tasks.map((task) => (
+                                <TaskCard
+                                    key={task.id}
+                                    {...task}
+                                    onLearnMore={() => console.log('Learn more about', task.id)}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+        </MainLayout>
     );
 } 

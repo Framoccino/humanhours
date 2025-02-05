@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
 import MainLayout from '../components/layout/MainLayout';
+import { Search, Users, BarChart2, Clock, Star } from 'lucide-react';
 import ValidatedSkillBadge from '../components/skills/ValidatedSkillBadge';
 import TaskCard from '../components/tasks/TaskCard';
+import { useWeb3 } from '../context/Web3Context';
 
 const mockSkills = [
-  { name: 'Gardening', count: 12 },
-  { name: 'Photography', count: 8 },
-  { name: 'Cooking', count: 15 }
+  { name: 'Gardening', count: 12, isActive: true },
+  { name: 'Photography', count: 8, isActive: true },
+  { name: 'Cooking', count: 15, isActive: true },
+  { name: 'Web Development', count: 5 },
+  { name: 'Language Teaching', count: 3 }
 ];
 
 const mockTasks = [
@@ -16,77 +19,69 @@ const mockTasks = [
     title: 'Help with Garden Maintenance',
     location: 'Brooklyn, NY',
     duration: '3 hours',
-    description: 'Need help with pruning trees and planting new flowers in my backyard garden.'
+    description: 'Need help with pruning trees and planting new flowers in my backyard garden.',
+    hourlyRate: 2,
+    provider: {
+      name: 'Sarah M.',
+      rating: 4.8,
+      completedTasks: 23
+    }
   },
   {
     id: 2,
     title: 'Teach Basic Photography',
     location: 'Online',
     duration: '2 hours',
-    description: 'Looking for someone to teach me the basics of DSLR photography and photo editing.'
+    description: 'Looking for someone to teach me the basics of DSLR photography and photo editing.',
+    hourlyRate: 1.5,
+    provider: {
+      name: 'John D.',
+      rating: 4.9,
+      completedTasks: 15
+    }
   },
   {
     id: 3,
     title: 'Cook Healthy Meals',
     location: 'Manhattan, NY',
     duration: '4 hours',
-    description: "Need assistance preparing a week's worth of healthy meal prep for my family."
+    description: "Need assistance preparing a week's worth of healthy meal prep for my family.",
+    hourlyRate: 2,
+    provider: {
+      name: 'Mike R.',
+      rating: 4.7,
+      completedTasks: 31
+    }
   }
 ];
 
+const mockStats = {
+  balance: 100,
+  earned: 250,
+  completed: 12,
+  rating: 4.8
+};
+
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const { account } = useWeb3();
 
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Welcome Back</h1>
-
-        <div className="relative mb-8">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="What do you want to do today?"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white rounded-lg border focus:ring-2 
-                     focus:ring-green-500 focus:border-transparent"
-          />
-        </div>
-
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Validated Skills</h2>
-          <div className="flex flex-wrap gap-3">
-            {mockSkills.map((skill) => (
-              <ValidatedSkillBadge
-                key={skill.name}
-                name={skill.name}
-                count={skill.count}
-              />
-            ))}
+      <div className="min-h-screen bg-[#0A192F]">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="mb-16 max-w-4xl">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#E6F1FF] leading-tight">
+              Welcome to Human Hours
+            </h1>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-[#64FFDA] leading-relaxed">
+              The Economy of Time
+            </h2>
+            <p className="text-lg md:text-xl text-[#8892B0] leading-relaxed">
+              A decentralized P2P platform where time is currency. Trade skills, earn Human Hours ($HH), 
+              and exchange them for services—no middlemen, no inflation, no fees. Every transaction is 
+              peer-validated and secured on blockchain, ensuring fairness, trust, and financial freedom.
+            </p>
           </div>
-        </section>
-
-        <div className="flex gap-4 mb-8">
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-            Add $HH
-          </button>
-          <button className="px-4 py-2 border rounded-lg hover:bg-gray-50">
-            Use $HH
-          </button>
-          <button className="px-4 py-2 border rounded-lg hover:bg-gray-50">
-            Analytics
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockTasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              {...task}
-              onLearnMore={() => console.log('Learn more about', task.id)}
-            />
-          ))}
         </div>
       </div>
     </MainLayout>

@@ -1,21 +1,19 @@
-import { ReactNode } from 'react';
+import { useState } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
-interface MainLayoutProps {
-  children: ReactNode;
-}
+export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-6">
-          {children}
-        </main>
-      </div>
+    <div className="min-h-screen bg-[#0A192F]">
+      <Header onMenuClick={() => setSidebarOpen(true)} />
+      <main className="flex-1">
+        {children}
+      </main>
+      {sidebarOpen && (
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      )}
     </div>
   );
 } 

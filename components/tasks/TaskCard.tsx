@@ -1,4 +1,4 @@
-import { MapPin, Clock } from 'lucide-react';
+import { Clock, MapPin } from 'lucide-react';
 
 interface TaskCardProps {
   title: string;
@@ -16,26 +16,22 @@ export default function TaskCard({
   onLearnMore
 }: TaskCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow transition-shadow">
-      <h3 className="text-xl font-semibold mb-4">{title}</h3>
+    <div className="bg-[#112240] rounded-lg shadow-lg p-6 border border-[#1E2D4D] hover:border-[#64FFDA] transition-colors">
+      <h3 className="text-lg font-semibold mb-2 text-[#E6F1FF]">{title}</h3>
       
-      <div className="space-y-3 mb-4">
-        <div className="flex items-center gap-2 text-gray-600">
-          <MapPin className="w-4 h-4 text-gray-400" />
-          <span>{location}</span>
-        </div>
-        <div className="flex items-center gap-2 text-gray-600">
-          <Clock className="w-4 h-4 text-gray-400" />
-          <span>{duration}</span>
-        </div>
+      <div className="flex items-center gap-2 text-sm text-[#8892B0] mb-2">
+        <MapPin className="w-4 h-4" />
+        <span>{location}</span>
+        <Clock className="w-4 h-4 ml-2" />
+        <span>{duration}</span>
       </div>
-
-      <p className="text-gray-600 mb-4 line-clamp-2">{description}</p>
-
+      
+      <p className="text-[#8892B0] mb-4">{description}</p>
+      
       <button
         onClick={onLearnMore}
-        className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 
-                 transition-colors"
+        className="w-full px-4 py-2 border border-[#64FFDA] text-[#64FFDA] rounded-lg 
+                 hover:bg-[#64FFDA]/10 transition-colors"
       >
         Learn More
       </button>

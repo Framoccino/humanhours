@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://your-domain.com/</loc>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://your-domain.com/tasks</loc>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://your-domain.com/wallet</loc>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://your-domain.com/dao</loc>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://your-domain.com/community</loc>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+</urlset> 
