@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+</head>
+<body>
+    <canvas id="icon192" width="192" height="192"></canvas>
+    <canvas id="icon512" width="512" height="512"></canvas>
+    <script>
+        function drawIcon(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const radius = canvas.width * 0.2;
+            
+            // Blue background
+            ctx.fillStyle = '#0000ff';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, canvas.width, canvas.height, radius);
+            ctx.fill();
+        }
+        
+        drawIcon('icon192');
+        drawIcon('icon512');
+    </script>
+</body>
+</html> 
