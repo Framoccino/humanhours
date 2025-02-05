@@ -6,6 +6,8 @@
     <title>Human Hours</title>
     <!-- Modern Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- Web3 Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
     <script src="/public/js/web3.js"></script>
@@ -123,17 +125,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.8rem 1.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            text-decoration: none;
         }
 
         .suggestion-bar:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px);
+            border-color: var(--accent-green);
         }
 
         .suggestion-content {
@@ -143,13 +147,22 @@
         }
 
         .suggestion-icon {
-            font-size: 1.2rem;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
             opacity: 0.8;
+            color: var(--accent-green);
         }
 
         .suggestion-text {
             color: var(--primary-light);
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
         }
 
         .suggestion-hours {
@@ -591,31 +604,37 @@
             <div class="search-suggestions"></div>
         </div>
 
-        <div class="suggestion-bars">
-            <div class="suggestion-bar">
+        <nav class="suggestion-bars">
+            <a href="/services/gardening" class="suggestion-bar">
                 <div class="suggestion-content">
-                    <span class="suggestion-icon">🌱</span>
+                    <span class="suggestion-icon material-icons-round">
+                        yard
+                    </span>
                     <span class="suggestion-text">Garden Maintenance & Landscaping</span>
                 </div>
                 <span class="suggestion-hours">3-5 HH/hour</span>
-            </div>
+            </a>
 
-            <div class="suggestion-bar">
+            <a href="/services/moving" class="suggestion-bar">
                 <div class="suggestion-content">
-                    <span class="suggestion-icon">🚗</span>
+                    <span class="suggestion-icon material-icons-round">
+                        local_shipping
+                    </span>
                     <span class="suggestion-text">Local Moving Help - Brooklyn</span>
                 </div>
                 <span class="suggestion-hours">4 HH/hour</span>
-            </div>
+            </a>
 
-            <div class="suggestion-bar">
+            <a href="/services/furniture" class="suggestion-bar">
                 <div class="suggestion-content">
-                    <span class="suggestion-icon">🔧</span>
+                    <span class="suggestion-icon material-icons-round">
+                        handyman
+                    </span>
                     <span class="suggestion-text">Custom Furniture Building</span>
                 </div>
                 <span class="suggestion-hours">25 HH/project</span>
-            </div>
-        </div>
+            </a>
+        </nav>
     </section>
 
     <main class="main-container">
