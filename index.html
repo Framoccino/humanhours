@@ -79,22 +79,108 @@
         }
 
         /* Search bar */
+        .search-bar-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
         .search-bar {
             width: 100%;
             padding: 1rem;
-            border: 1px solid var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            margin-bottom: 2rem;
             font-size: 1rem;
-            background: rgba(17, 34, 64, 0.6);
+            background: rgba(0, 0, 0, 0.6);
             color: var(--text-primary);
             transition: all 0.2s;
+            backdrop-filter: blur(10px);
         }
 
         .search-bar:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.1);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.1);
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        /* Suggestion Bars */
+        .suggestion-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            width: 100%;
+            max-width: 700px;
+            margin: 1rem auto;
+        }
+
+        .suggestion-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .suggestion-bar:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .suggestion-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .suggestion-icon {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .suggestion-text {
+            color: var(--primary-light);
+            font-size: 1rem;
+        }
+
+        .suggestion-hours {
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        /* Search Suggestions Dropdown */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            padding: 0.5rem 0;
+            display: none;
+            z-index: 1000;
+        }
+
+        .search-suggestion-item {
+            padding: 0.8rem 1rem;
+            color: var(--primary-light);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-suggestion-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* Validated Skills section */
@@ -496,16 +582,51 @@
     <!-- Welcome Section -->
     <section class="welcome-section">
         <h1>Welcome Back!</h1>
-        <!-- Rest of your content -->
+        <div class="search-bar-container">
+            <input 
+                type="text" 
+                class="search-bar" 
+                placeholder="What do you want to do today?"
+            >
+            <div class="search-suggestions"></div>
+        </div>
+
+        <div class="suggestion-bars">
+            <div class="suggestion-bar">
+                <div class="suggestion-content">
+                    <span class="suggestion-icon">🌱</span>
+                    <span class="suggestion-text">Garden Maintenance & Landscaping</span>
+                </div>
+                <span class="suggestion-hours">3-5 HH/hour</span>
+            </div>
+
+            <div class="suggestion-bar">
+                <div class="suggestion-content">
+                    <span class="suggestion-icon">🚗</span>
+                    <span class="suggestion-text">Local Moving Help - Brooklyn</span>
+                </div>
+                <span class="suggestion-hours">4 HH/hour</span>
+            </div>
+
+            <div class="suggestion-bar">
+                <div class="suggestion-content">
+                    <span class="suggestion-icon">🔧</span>
+                    <span class="suggestion-text">Custom Furniture Building</span>
+                </div>
+                <span class="suggestion-hours">25 HH/project</span>
+            </div>
+        </div>
     </section>
 
     <main class="main-container">
         <h1>Welcome Back</h1>
         
-        <input type="search" 
-               class="search-bar" 
-               placeholder="What do you want to do today?"
-        >
+        <div class="search-bar-container">
+            <input type="search" 
+                   class="search-bar" 
+                   placeholder="What do you want to do today?"
+            >
+        </div>
 
         <section class="validated-skills">
             <h2>Validated Skills</h2>
@@ -789,6 +910,62 @@
             
             // Handle window resize
             window.addEventListener('resize', () => visualization.resize());
+        });
+
+        // Search and suggestions functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchBar = document.querySelector('.search-bar');
+            const suggestionsContainer = document.querySelector('.search-suggestions');
+            
+            const humanSkills = [
+                "Garden Maintenance",
+                "Home Cooking",
+                "Pet Sitting",
+                "House Painting",
+                "Moving Help",
+                "Furniture Assembly",
+                "Personal Training",
+                "Music Lessons",
+                "Language Practice",
+                "Handyman Services"
+            ];
+
+            searchBar.addEventListener('focus', () => {
+                searchBar.placeholder = '';
+            });
+
+            searchBar.addEventListener('blur', (e) => {
+                if (!e.target.value) {
+                    searchBar.placeholder = 'What do you want to do today?';
+                }
+            });
+
+            searchBar.addEventListener('input', (e) => {
+                const value = e.target.value.toLowerCase();
+                if (value.length > 0) {
+                    const filteredSkills = humanSkills.filter(skill => 
+                        skill.toLowerCase().includes(value)
+                    );
+                    
+                    suggestionsContainer.innerHTML = filteredSkills
+                        .map(skill => `
+                            <div class="search-suggestion-item">
+                                ${skill}
+                            </div>
+                        `).join('');
+                    
+                    suggestionsContainer.style.display = 'block';
+                } else {
+                    suggestionsContainer.style.display = 'none';
+                }
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-bar-container')) {
+                    suggestionsContainer.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
