@@ -1,16 +1,29 @@
 import { AppProps } from 'next/app';
 import { Web3Provider } from '@/context/Web3Context';
-import { ErrorBoundary } from '../components/error/ErrorBoundary';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { initializeMonitoring, trackPageView } from '../utils/monitoring';
 import { debug } from '../utils/debug';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import '../styles/globals.css';
+import { useRouter } from 'next/router';
 
 // Initialize monitoring
 initializeMonitoring();
 
+// Update the routes configuration
+const routes = {
+  '/': 'Home',
+  '/tasks': 'Tasks',
+  '/wallet': 'Wallet',
+  '/messages': 'Messages',
+  '/community': 'Community',
+  '/dao': 'DAO'
+};
+
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // Register service worker
@@ -23,6 +36,19 @@ export default function App({ Component, pageProps }: AppProps) {
       trackPageView(window.location.pathname);
     }
   }, []);
+
+  // Add navigation tracking
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      console.log('Route changed to:', url);
+      trackPageView(url);
+    };
+
+    router.events.on('routeChange', handleRouteChange);
+    return () => {
+      router.events.off('routeChange', handleRouteChange);
+    };
+  }, [router]);
 
   return (
     <ErrorBoundary>

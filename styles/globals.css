@@ -3,17 +3,33 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0A192F;
-  --secondary: #112240;
-  --accent: #64FFDA;
-  --text-primary: #E6F1FF;
-  --text-secondary: #8892B0;
+  /* Primary Colors */
+  --color-primary: #28a745;
+  --color-primary-hover: #218838;
+  --color-secondary: #6f42c1;
+  --color-secondary-hover: #5e37a6;
+  
+  /* Background Colors */
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  
+  /* Text Colors */
+  --color-text: #212529;
+  --color-text-secondary: #6c757d;
+  
+  /* Border Colors */
+  --color-border: #dee2e6;
 }
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+/* Add any additional global styles here */
 
 html,
 body {
-  background-color: var(--primary);
-  color: var(--text-primary);
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -46,11 +62,11 @@ body {
 }
 
 .input {
-  background-color: var(--secondary);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 .input::placeholder {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 } 

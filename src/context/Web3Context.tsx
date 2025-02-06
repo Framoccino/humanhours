@@ -1,58 +1,47 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { web3Service } from '@/utils/web3';
+import { ethers } from 'ethers';
 
-interface Web3ContextType {
-  isConnected: boolean;
-  account: string | null;
-  balance: string;
-  connectWallet: () => Promise<void>;
-}
-
-const Web3Context = createContext<Web3ContextType>({
-  isConnected: false,
+export const Web3Context = createContext({
   account: null,
-  balance: '0',
   connectWallet: async () => {},
+  isConnecting: false,
+  error: null
 });
 
-export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const [isConnected, setIsConnected] = useState(false);
-  const [account, setAccount] = useState<string | null>(null);
-  const [balance, setBalance] = useState('0');
+export function Web3Provider({ children }) {
+  const [account, setAccount] = useState(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [error, setError] = useState(null);
 
   const connectWallet = async () => {
     try {
-      const account = await web3Service.connectWallet();
-      setAccount(account);
-      setIsConnected(true);
-      
-      const balance = await web3Service.getBalance();
-      setBalance(balance);
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      setIsConnecting(true);
+      if (typeof window.ethereum !== 'undefined') {
+        const accounts = await window.ethereum.request({ 
+          method: 'eth_requestAccounts' 
+        });
+        setAccount(accounts[0]);
+      } else {
+        throw new Error('Please install MetaMask');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsConnecting(false);
     }
   };
 
+  // Listen for account changes
   useEffect(() => {
-    // Check if previously connected
-    const checkConnection = async () => {
-      const initialized = await web3Service.initialize();
-      if (initialized) {
-        const account = web3Service.getConnectedAccount();
-        if (account) {
-          setAccount(account);
-          setIsConnected(true);
-          const balance = await web3Service.getBalance();
-          setBalance(balance);
-        }
-      }
-    };
-
-    checkConnection();
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        setAccount(accounts[0] || null);
+      });
+    }
   }, []);
 
   return (
-    <Web3Context.Provider value={{ isConnected, account, balance, connectWallet }}>
+    <Web3Context.Provider value={{ account, connectWallet, isConnecting, error }}>
       {children}
     </Web3Context.Provider>
   );

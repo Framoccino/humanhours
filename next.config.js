@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    reactStrictMode: true,
     output: 'export',
     images: {
         unoptimized: true,
@@ -19,7 +20,6 @@ const nextConfig = {
             '/community': { page: '/community' },
         }
     },
-    reactStrictMode: true,
     swcMinify: true,
     compiler: {
         removeConsole: process.env.NODE_ENV === 'production',
