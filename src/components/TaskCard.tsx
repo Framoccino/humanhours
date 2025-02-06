@@ -9,8 +9,8 @@ interface TaskCardProps {
 
 export function TaskCard({ title, location, duration, description }: TaskCardProps) {
   return (
-    <div className="card p-6 hover:scale-[1.02] transition-transform duration-200">
-      <h3 className="text-xl font-semibold mb-3 text-gray-900">{title}</h3>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+      <h3 className="text-xl font-semibold mb-3">{title}</h3>
       
       <div className="flex items-center gap-4 mb-3 text-gray-600">
         <div className="flex items-center gap-1">
@@ -25,7 +25,9 @@ export function TaskCard({ title, location, duration, description }: TaskCardPro
       
       <p className="text-gray-600 mb-4">{description}</p>
       
-      <button className="button-primary w-full">Learn More</button>
+      <button className="w-full px-4 py-2 bg-[#28a745] text-white rounded-lg">
+        Learn More
+      </button>
     </div>
   );
 } 

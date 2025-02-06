@@ -1,6 +1,7 @@
 import { Header } from '@/components/layout/Header';
-import { SearchSection } from '@/components/SearchSection';
-import { TaskList } from '@/components/TaskList';
+import { HeroSection } from '@/components/HeroSection';
+import { TaskSection } from '@/components/TaskSection';
+import { SkillSection } from '@/components/SkillSection';
 import { useEffect } from 'react';
 import '../scripts/verify-connections';
 import { verifySite } from '../scripts/verify-site';
@@ -18,9 +19,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Top Green Section */}
       <Header />
-      <SearchSection />
-      <TaskList />
+      <HeroSection />
+      
+      {/* Main Content */}
+      <main>
+        <SkillSection />
+        <TaskSection />
+      </main>
     </div>
   );
 } 
