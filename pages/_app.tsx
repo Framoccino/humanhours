@@ -1,5 +1,5 @@
 import { AppProps } from 'next/app';
-import { Web3Provider } from '../context/Web3Context';
+import { Web3Provider } from '@/context/Web3Context';
 import { ErrorBoundary } from '../components/error/ErrorBoundary';
 import { initializeMonitoring, trackPageView } from '../utils/monitoring';
 import { debug } from '../utils/debug';
