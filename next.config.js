@@ -15,9 +15,11 @@ const nextConfig = {
     exportPathMap: async function () {
         return {
             '/': { page: '/' },
-            '/dao': { page: '/dao' },
+            '/tasks': { page: '/tasks' },
+            '/wallet': { page: '/wallet' },
             '/messages': { page: '/messages' },
             '/community': { page: '/community' },
+            '/dao': { page: '/dao' },
         }
     },
     swcMinify: true,
@@ -36,6 +38,7 @@ const nextConfig = {
         config.resolve.fallback = { fs: false, net: false, tls: false };
         return config;
     },
+    cleanDistDir: true,
 }
 
 module.exports = nextConfig; 
