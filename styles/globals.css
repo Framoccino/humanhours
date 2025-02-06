@@ -3,27 +3,66 @@
 @tailwind utilities;
 
 :root {
-  /* Primary Colors */
+  /* Modern Color Palette */
   --color-primary: #28a745;
   --color-primary-hover: #218838;
   --color-secondary: #6f42c1;
   --color-secondary-hover: #5e37a6;
   
-  /* Background Colors */
+  /* Light, Modern Background Colors */
   --color-background: #ffffff;
   --color-surface: #f8f9fa;
+  --color-surface-hover: #f1f3f5;
   
   /* Text Colors */
-  --color-text: #212529;
-  --color-text-secondary: #6c757d;
+  --color-text: #2d3748;
+  --color-text-secondary: #718096;
   
   /* Border Colors */
-  --color-border: #dee2e6;
+  --color-border: #e2e8f0;
+  
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-text);
+}
+
+/* Modern Card Styles */
+.card {
+  @apply bg-white rounded-lg shadow-md border border-gray-100 
+         hover:shadow-lg transition-shadow duration-200;
+}
+
+/* Modern Button Styles */
+.button-primary {
+  @apply px-4 py-2 bg-[#28a745] text-white rounded-lg 
+         hover:bg-[#218838] transition-colors duration-200;
+}
+
+.button-secondary {
+  @apply px-4 py-2 bg-[#6f42c1] text-white rounded-lg 
+         hover:bg-[#5e37a6] transition-colors duration-200;
+}
+
+/* Modern Input Styles */
+.input-primary {
+  @apply w-full px-4 py-2 rounded-lg border border-gray-200 
+         focus:border-[#28a745] focus:ring-1 focus:ring-[#28a745] 
+         transition-colors duration-200;
+}
+
+.input {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
 }
 
 /* Add any additional global styles here */
