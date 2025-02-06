@@ -8,7 +8,6 @@ export class AIVisualization {
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private particleSystem: THREE.Points;
-  private isVisible: boolean = false;
   private animationFrame: number | null = null;
   private lastTime: number = performance.now();
   private updateInterval: number = 1000 / 30;
@@ -25,118 +24,86 @@ export class AIVisualization {
     this.canvas = document.createElement('canvas');
     container.appendChild(this.canvas);
 
-    // Three.js setup
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      container.offsetWidth / container.offsetHeight,
-      0.1,
-      1000
-    );
-
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance"
-    });
-
-    // Optimize renderer
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-
-    this.init();
-    this.observeVisibility();
+    this.initScene();
+    this.initCamera();
+    this.initRenderer();
+    this.initParticles();
+    this.startAnimation();
   }
 
-  private init(): void {
-    // Use InstancedBufferGeometry for better performance
+  private initScene() {
+    this.scene = new THREE.Scene();
+  }
+
+  private initCamera() {
+    const aspectRatio = this.container.clientWidth / this.container.clientHeight;
+    this.camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+    this.camera.position.z = 5;
+  }
+
+  private initRenderer() {
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
+    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+  }
+
+  private initParticles() {
     const geometry = new THREE.BufferGeometry();
-    const vertices: number[] = [];
-    const colors: number[] = [];
+    const positions = new Float32Array(this.particleCount * 3);
+    const colors = new Float32Array(this.particleCount * 3);
 
     for (let i = 0; i < this.particleCount; i++) {
-      const color = this.colorPalette[Math.floor(Math.random() * this.colorPalette.length)];
-      vertices.push(
-        Math.random() * 60 - 30,
-        Math.random() * 40 - 20,
-        Math.random() * 60 - 30
-      );
+      const x = (Math.random() - 0.5) * 10;
+      const y = (Math.random() - 0.5) * 10;
+      const z = (Math.random() - 0.5) * 10;
 
-      colors.push(
-        color.r,
-        color.g,
-        color.b,
-        Math.random() * 0.7 + 0.3
-      );
+      positions.set([x, y, z], i * 3);
+
+      const color = this.colorPalette[Math.floor(Math.random() * this.colorPalette.length)];
+      colors.set([color.r, color.g, color.b], i * 3);
     }
 
-    geometry.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(vertices, 3)
-    );
-    geometry.setAttribute(
-      'color',
-      new THREE.Float32BufferAttribute(colors, 4)
-    );
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    const material = new THREE.PointsMaterial({
-      size: 0.3,
-      vertexColors: true,
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-
+    const material = new THREE.PointsMaterial({ size: 0.1, vertexColors: true });
     this.particleSystem = new THREE.Points(geometry, material);
     this.scene.add(this.particleSystem);
-    this.camera.position.z = 40;
   }
 
-  private animate(timestamp: number): void {
-    if (!this.isVisible) return;
+  private startAnimation() {
+    const animate = (time: number) => {
+      this.animationFrame = requestAnimationFrame(animate);
 
-    if (timestamp - this.lastUpdate > this.updateInterval) {
-      const positions = this.particleSystem.geometry.attributes.position.array;
-      for (let i = 0; i < positions.length; i += 3) {
-        const time = timestamp * 0.0003;
-        positions[i + 1] += Math.sin(time + i) * 0.006;
-        positions[i] += Math.cos(time * 0.7 + i) * 0.004;
-        positions[i + 2] += Math.sin(time * 0.5 + i) * 0.005;
+      if (time - this.lastUpdate >= this.updateInterval) {
+        this.updateParticles();
+        this.renderer.render(this.scene, this.camera);
+        this.lastUpdate = time;
       }
-      this.particleSystem.geometry.attributes.position.needsUpdate = true;
-      this.lastUpdate = timestamp;
+    };
+
+    this.animationFrame = requestAnimationFrame(animate);
+  }
+
+  private updateParticles() {
+    const positions = this.particleSystem.geometry.attributes.position.array as Float32Array;
+
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i] += (Math.random() - 0.5) * 0.01;
+      positions[i + 1] += (Math.random() - 0.5) * 0.01;
+      positions[i + 2] += (Math.random() - 0.5) * 0.01;
     }
 
-    this.renderer.render(this.scene, this.camera);
-    this.animationFrame = requestAnimationFrame((t) => this.animate(t));
+    this.particleSystem.geometry.attributes.position.needsUpdate = true;
   }
 
-  public resize(): void {
-    const width = this.container.offsetWidth;
-    const height = this.container.offsetHeight;
-
-    this.camera.aspect = width / height;
+  public resize() {
+    const aspectRatio = this.container.clientWidth / this.container.clientHeight;
+    this.camera.aspect = aspectRatio;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
   }
 
-  private observeVisibility(): void {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        this.isVisible = entry.isIntersecting;
-        if (this.isVisible) {
-          this.animate(performance.now());
-        } else if (this.animationFrame) {
-          cancelAnimationFrame(this.animationFrame);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    observer.observe(this.container);
-  }
-
-  public destroy(): void {
+  public destroy() {
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
     }
