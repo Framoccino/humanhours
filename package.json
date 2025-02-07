@@ -2,7 +2,7 @@
     "name": "humanhours",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://framoccino.github.io/humanhours",
+    "homepage": "https://framoccino.github.io/human-hours",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
